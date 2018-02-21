@@ -20,6 +20,10 @@
 
 structure_t *init_st(int size){
     structure_t *ll = (structure_t*)malloc(sizeof(structure_t));
+    if (ll == NULL){
+        printf("Can't allocate memory, shit happens dude, take it easy..\n");
+        return NULL;
+    }
     ll->size = 0;
     ll->head = NULL;
     return ll;
