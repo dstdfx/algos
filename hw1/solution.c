@@ -5,7 +5,7 @@
  * Implemented: doubly linked list
  * Big-O of solution:
  *   pop  - O(n)
- *   push - O(n) 
+ *   push - O(n)
  *   find - O(n)
  *   delete - O(n)
  *   print_stack - O(n)
@@ -16,33 +16,35 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "struct_generic.h"
-#include "struct_list.h"
+#include "testing.h"
 
-list_t *new_list(int size){
-    list_t *ll = (list_t*)malloc(sizeof(list_t));
+structure_t *init_st(int size){
+    structure_t *ll = (structure_t*)malloc(sizeof(structure_t));
     ll->size = 0;
     ll->head = NULL;
     return ll;
 }
 
-int is_empty(list_t *list){
+int is_st_empty(structure_t *list){
     return list->size == 0 ? 1 : 0;
 }
 
-void print_struct(list_t *list){
-    list_elem_t *current = list->head;
-    while (current->next != NULL){
-        current = current->next;
-    }
+void print_struct(structure_t *list){
+    if (!is_st_empty(list)){
+        node_t *current = list->head;
+        while (current->next != NULL) {
+            current = current->next;
+        }
 
-    while (current != NULL){
-        printf("%d ", current->key);
-        current = current->prev;
+        while (current != NULL) {
+            printf("%d ", current->key);
+            current = current->prev;
+        }
+        printf("\n");
     }
 }
 
-void push(list_t *list, list_elem_t *elem){
+void push(structure_t *list, node_t *elem){
     printf("Push %d\n", elem->key);
     // In case if list is empty
     if (list->head == NULL){
@@ -51,7 +53,7 @@ void push(list_t *list, list_elem_t *elem){
         list->head->next = NULL;
         list->size++;
     } else {
-        list_elem_t *current = list->head;
+        node_t *current = list->head;
         while (current->next != NULL){
             current = current->next;
         }
@@ -62,21 +64,21 @@ void push(list_t *list, list_elem_t *elem){
     }
 }
 
-list_elem_t *pop(list_t *list){
+node_t *pop(structure_t *list){
 
-    if (is_empty(list)){
+    if (is_st_empty(list)){
         return NULL;
     }
 
     if (list->size == 1){
-        list_elem_t *tmp = list->head;
+        node_t *tmp = list->head;
         printf("Pop %d\n", tmp->key);
         list->head = NULL;
         list->size--;
         return tmp;
     }
 
-    list_elem_t *current = list->head;
+    node_t *current = list->head;
     while (current->next != NULL){
         current = current->next;
     }
@@ -88,10 +90,10 @@ list_elem_t *pop(list_t *list){
     return current;
 }
 
-list_elem_t *find(list_t *list, int key){
+node_t *find(structure_t *list, int key){
 
     int found = 0;
-    list_elem_t *current = list->head;
+    node_t *current = list->head;
     while (current != NULL && found == 0) {
         if (current->key == key) {
             found = 1;
@@ -102,8 +104,8 @@ list_elem_t *find(list_t *list, int key){
     return current;
 }
 
-list_elem_t *delete(list_t *list, int key){
-    list_elem_t *elem = find(list, key);
+node_t *delete(structure_t *list, int key){
+    node_t *elem = find(list, key);
     if (elem == NULL){
         return NULL;
     }
