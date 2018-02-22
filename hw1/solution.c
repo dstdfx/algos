@@ -4,8 +4,8 @@
  *
  * Implemented: doubly linked list
  * Big-O of solution:
- *   pop  - O(n)
- *   push - O(n)
+ *   pop  - O(1)
+ *   push - O(1)
  *   find - O(n)
  *   delete - O(n)
  *   print_stack - O(n)
@@ -25,7 +25,7 @@ structure_t *init_st(int size){
         return NULL;
     }
     ll->size = 0;
-    ll->head = NULL;
+    ll->head = ll->tail = NULL;
     return ll;
 }
 
@@ -35,11 +35,7 @@ int is_st_empty(structure_t *list){
 
 void print_struct(structure_t *list){
     if (!is_st_empty(list)){
-        node_t *current = list->head;
-        while (current->next != NULL) {
-            current = current->next;
-        }
-
+        node_t *current = list->tail;
         while (current != NULL) {
             printf("%d ", current->key);
             current = current->prev;
@@ -48,59 +44,50 @@ void print_struct(structure_t *list){
     }
 }
 
+// push to the list tail
 void push(structure_t *list, node_t *elem){
     printf("Push %d\n", elem->key);
-    // In case if list is empty
+
+    elem->next = NULL;
+    elem->prev = NULL;
+
     if (list->head == NULL){
         list->head = elem;
-        list->head->prev = NULL;
-        list->head->next = NULL;
+        list->tail = elem;
         list->size++;
     } else {
-        node_t *current = list->head;
-        while (current->next != NULL){
-            current = current->next;
-        }
-        current->next = elem;
-        current->next->prev = current;
-        current->next->next = NULL;
+        elem->prev = list->tail;
+        list->tail = elem;
+        list->tail->prev->next = elem;
         list->size++;
     }
 }
 
+// pop from the list head
 node_t *pop(structure_t *list){
 
     if (is_st_empty(list)){
         return NULL;
     }
 
-    if (list->size == 1){
-        node_t *tmp = list->head;
-        printf("Pop %d\n", tmp->key);
-        list->head = NULL;
-        list->size--;
-        return tmp;
-    }
+    node_t *tmp = list->head;
 
-    node_t *current = list->head;
-    while (current->next != NULL){
-        current = current->next;
+    if (list->head->next == NULL){
+        list->tail = NULL;
+    } else {
+        list->head->next->prev = NULL;
     }
-    printf("Pop %d\n", current->key);
-    current->prev->next = current->next;
-    current->prev = NULL;
-    current->next = NULL;
+    list->head = list->head->next;
     list->size--;
-    return current;
+    return tmp;
 }
 
 node_t *find(structure_t *list, int key){
 
-    int found = 0;
     node_t *current = list->head;
-    while (current != NULL && found == 0) {
+    while (current != NULL) {
         if (current->key == key) {
-            found = 1;
+            return current;
         } else {
             current = current->next;
         }
@@ -110,23 +97,28 @@ node_t *find(structure_t *list, int key){
 
 node_t *delete(structure_t *list, int key){
     node_t *elem = find(list, key);
+
     if (elem == NULL){
         return NULL;
     }
 
-    if (elem->prev == NULL){
-        if (list->size != 1){
-            list->head = elem->next;
-            list->head->prev = NULL;
-        } else {
-            list->head = NULL;
-        }
+    if (elem->prev == NULL && elem->next == NULL){
+        // if it's the only element
+        list->head = NULL;
+        list->tail = NULL;
+    } else if (elem->prev == NULL && list->head->next != NULL){
+        // if it's head and not the only element
+        list->head->next->prev = NULL;
+        list->head = list->head->next;
+    } else if (elem->next == NULL && list->tail->prev != NULL) {
+        // if it's tail and not the only element
+        list->tail->prev->next = NULL;
+        list->tail = list->tail->prev;
     } else {
         elem->prev->next = elem->next;
-        if (elem->next != NULL){
-            elem->next->prev = elem->prev;
-        }
+        elem->next->prev = elem->prev;
     }
+
     elem->next = NULL;
     elem->prev = NULL;
     list->size--;

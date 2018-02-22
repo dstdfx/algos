@@ -10,6 +10,7 @@ struct HW_NODE {
 struct HW_STRUCT {
   int size;
   struct HW_NODE *head;
+  struct HW_NODE *tail;
 };
 
 
