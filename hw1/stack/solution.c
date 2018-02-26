@@ -49,12 +49,10 @@ void push(structure_t *list, node_t *elem){
         return;
     }
 
-    elem->next = NULL;
-    elem->prev = NULL;
+    elem->next = elem->prev = NULL;
 
     if (list->head == NULL){
-        list->head = elem;
-        list->tail = elem;
+        list->head = list->tail = elem;
         list->elements++;
     } else {
         elem->prev = list->tail;
