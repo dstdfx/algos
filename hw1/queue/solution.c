@@ -2,16 +2,14 @@
  *
  * Author: Rutskiy Daniil
  *
- * Implemented: doubly linked list
+ * Implemented: queue
  * Big-O of solution:
- *   pop  - O(1)
- *   push - O(1)
- *   find - O(n)
- *   delete - O(n)
+ *   queue  - O(1)
+ *   dequeue - O(1)
  *   print_struct - O(n)
  *   is_empty - O(1)*/
 
-#define LIST_IMPL
+#define QUEUE_IMPL
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -45,14 +43,11 @@ void print_struct(structure_t *list){
     }
 }
 
-// push to the list tail
-void push(structure_t *list, node_t *elem){
+void enqueue(structure_t *list, node_t *elem){
     if (list->elements == list->max_size){
-        printf("List is overflowed\n");
+        printf("Queue is overflowed\n");
         return;
     }
-
-    printf("Push %d\n", elem->key);
 
     elem->next = NULL;
     elem->prev = NULL;
@@ -67,10 +62,10 @@ void push(structure_t *list, node_t *elem){
         list->tail->prev->next = elem;
         list->elements++;
     }
+    printf("Enqueue %d\n", elem->key);
 }
 
-// pop from the list head
-node_t *pop(structure_t *list){
+node_t *dequeue(structure_t *list){
 
     if (is_st_empty(list)){
         return NULL;
@@ -85,49 +80,6 @@ node_t *pop(structure_t *list){
     }
     list->head = list->head->next;
     list->elements--;
-    printf("Pop %d\n", tmp->key);
+    printf("Dequeue %d\n", tmp->key);
     return tmp;
-}
-
-node_t *find(structure_t *list, int key){
-
-    node_t *current = list->head;
-    while (current != NULL) {
-        if (current->key == key) {
-            return current;
-        } else {
-            current = current->next;
-        }
-    }
-    return current;
-}
-
-node_t *delete(structure_t *list, int key){
-    node_t *elem = find(list, key);
-
-    if (elem == NULL){
-        return NULL;
-    }
-
-    if (elem->prev == NULL && elem->next == NULL){
-        // if it's the only element
-        list->head = NULL;
-        list->tail = NULL;
-    } else if (elem->prev == NULL && list->head->next != NULL){
-        // if it's head and not the only element
-        list->head->next->prev = NULL;
-        list->head = list->head->next;
-    } else if (elem->next == NULL && list->tail->prev != NULL) {
-        // if it's tail and not the only element
-        list->tail->prev->next = NULL;
-        list->tail = list->tail->prev;
-    } else {
-        elem->prev->next = elem->next;
-        elem->next->prev = elem->prev;
-    }
-
-    elem->next = NULL;
-    elem->prev = NULL;
-    list->elements--;
-    return elem;
 }

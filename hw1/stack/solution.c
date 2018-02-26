@@ -6,7 +6,7 @@
  * Big-O of solution:
  *   pop  - O(1)
  *   push - O(1)
- *   print_stack - O(n)
+ *   print_struct - O(n)
  *   is_empty - O(1)*/
 
 #define STACK_IMPL
