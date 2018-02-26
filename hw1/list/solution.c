@@ -85,6 +85,7 @@ node_t *pop(structure_t *list){
     }
     list->head = list->head->next;
     list->elements--;
+    printf("Pop %d\n", tmp->key);
     return tmp;
 }
 
