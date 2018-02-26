@@ -8,7 +8,9 @@
  *   push - O(1)
  *   find - O(n)
  *   delete - O(n)
- *   print_stack - O(n)
+ *   insertBefore - O(n)
+ *   insertAfter - O(n)
+ *   print_struct - O(n)
  *   is_empty - O(1)*/
 
 #define LIST_IMPL
@@ -54,12 +56,10 @@ void push(structure_t *list, node_t *elem){
 
     printf("Push %d\n", elem->key);
 
-    elem->next = NULL;
-    elem->prev = NULL;
+    elem->next = elem->prev = NULL;
 
     if (list->head == NULL){
-        list->head = elem;
-        list->tail = elem;
+        list->head = list->tail = elem;
         list->elements++;
     } else {
         elem->prev = list->tail;
@@ -85,6 +85,7 @@ node_t *pop(structure_t *list){
     }
     list->head = list->head->next;
     list->elements--;
+    printf("Pop %d\n", tmp->key);
     return tmp;
 }
 
@@ -108,15 +109,14 @@ node_t *delete(structure_t *list, int key){
         return NULL;
     }
 
-    if (elem->prev == NULL && elem->next == NULL){
+    if (elem == list->head && elem->next == NULL){
         // if it's the only element
-        list->head = NULL;
-        list->tail = NULL;
-    } else if (elem->prev == NULL && list->head->next != NULL){
+        list->head = list->tail = NULL;
+    } else if (elem == list->head && elem->next != NULL){
         // if it's head and not the only element
         list->head->next->prev = NULL;
         list->head = list->head->next;
-    } else if (elem->next == NULL && list->tail->prev != NULL) {
+    } else if (elem == list->tail && elem->prev != NULL) {
         // if it's tail and not the only element
         list->tail->prev->next = NULL;
         list->tail = list->tail->prev;
@@ -125,8 +125,60 @@ node_t *delete(structure_t *list, int key){
         elem->next->prev = elem->prev;
     }
 
-    elem->next = NULL;
-    elem->prev = NULL;
+    elem->next = elem->prev = NULL;
     list->elements--;
     return elem;
+}
+
+
+// Insert new element after node with specific key
+void insertAfter(structure_t *list, node_t *new, int key){
+    if (list->elements == list->max_size){
+        printf("List is overflowed\n");
+        return;
+    }
+
+    new->next = new->prev = NULL;
+
+    node_t *elem = find(list, key);
+    if (elem == NULL){
+        printf("Element with key %d not found\n", key);
+        return;
+    }
+
+    new->prev = elem;
+    new->next = elem->next;
+    elem->next = new;
+    if (elem != list->tail) {
+        new->next->prev = new;
+    } else {
+        list->tail = new;
+    }
+    printf("Insert %d\n", new->key);
+}
+
+// Insert new element before node with specific key
+void insertBefore(structure_t *list, node_t *new, int key){
+    if (list->elements == list->max_size){
+        printf("List is overflowed\n");
+        return;
+    }
+
+    new->next = new->prev = NULL;
+
+    node_t *elem = find(list, key);
+    if (elem == NULL){
+        printf("Element with key %d not found\n", key);
+        return;
+    }
+
+    new->next = elem;
+    new->prev = elem->prev;
+    elem->prev = new;
+    if (elem != list->head) {
+        new->prev->next = new;
+    } else {
+        list->head = new;
+    }
+    printf("Insert %d\n", new->key);
 }
