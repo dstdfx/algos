@@ -8,7 +8,8 @@ struct HW_NODE {
 };
 
 struct HW_STRUCT {
-  int size;
+  int max_size;
+  int elements;
   struct HW_NODE *head;
   struct HW_NODE *tail;
 };

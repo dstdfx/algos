@@ -24,13 +24,14 @@ structure_t *init_st(int size){
         printf("Can't allocate memory, shit happens dude, take it easy..\n");
         return NULL;
     }
-    ll->size = 0;
+    ll->max_size = size;
+    ll->elements = 0;
     ll->head = ll->tail = NULL;
     return ll;
 }
 
 int is_st_empty(structure_t *list){
-    return list->size == 0 ? 1 : 0;
+    return list->elements == 0 ? 1 : 0;
 }
 
 void print_struct(structure_t *list){
@@ -46,6 +47,11 @@ void print_struct(structure_t *list){
 
 // push to the list tail
 void push(structure_t *list, node_t *elem){
+    if (list->elements == list->max_size){
+        printf("List is overflowed\n");
+        return;
+    }
+
     printf("Push %d\n", elem->key);
 
     elem->next = NULL;
@@ -54,12 +60,12 @@ void push(structure_t *list, node_t *elem){
     if (list->head == NULL){
         list->head = elem;
         list->tail = elem;
-        list->size++;
+        list->elements++;
     } else {
         elem->prev = list->tail;
         list->tail = elem;
         list->tail->prev->next = elem;
-        list->size++;
+        list->elements++;
     }
 }
 
@@ -78,7 +84,7 @@ node_t *pop(structure_t *list){
         list->head->next->prev = NULL;
     }
     list->head = list->head->next;
-    list->size--;
+    list->elements--;
     return tmp;
 }
 
@@ -121,6 +127,6 @@ node_t *delete(structure_t *list, int key){
 
     elem->next = NULL;
     elem->prev = NULL;
-    list->size--;
+    list->elements--;
     return elem;
 }
