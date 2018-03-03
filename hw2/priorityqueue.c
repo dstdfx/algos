@@ -4,7 +4,11 @@
  *
  * Implemented: priority queue via binary heap on array
  * Big-O of solution:
- */
+ *   insert - O(log n)
+ *   getMax - O(1)
+ *   extractMax - O(log n)
+ *   removeElement - O(log n)
+ *   changePriority - O(log n)*/
 
 
 #include <stdlib.h>
